@@ -69,6 +69,59 @@ public class BST<Key extends Comparable<Key>, Value> {
     return node;
   }
 
+  public Value max() {
+    return max(root);
+  }
+
+  private Value max(Node node) {
+    if (node == null) {
+      return null;
+    }
+
+    if (node.right == null) {
+      return node.value;
+    } else {
+      return max(node.right);
+    }
+  }
+
+  private Value min() {
+    return min(root);
+  }
+
+  private Value min(Node node) {
+    if (node == null) {
+      return null;
+    }
+
+    if (node.left == null) {
+      return node.value;
+    } else {
+      return min(node.left);
+    }
+  }
+
+  // 获取二叉树中顺序排序，顺序为K的节点的值（0, 1, 2, 3 ... k）
+  public Value select(int k) {
+    return select(root, k).value;
+  }
+
+  public Node select(Node node, int k) {
+    if (node == null) {
+      return null;
+    }
+
+    int t = size(node.left);
+    if (k == t) {
+      return node;
+    } else if (t > k) {
+      return select(node.left, k);
+    } else {
+      return select(node.right, k - t - 1);
+    }
+
+  }
+
   public static void main(String[] args) {
     BST<Integer, Integer> bst = new BST<>();
     bst.put(1, 1);
@@ -76,6 +129,8 @@ public class BST<Key extends Comparable<Key>, Value> {
     bst.put(3, 3);
     bst.put(4, 4);
     bst.put(4, 4);
-    System.out.println(1);
+    System.out.println(bst.max());
+    System.out.println(bst.min());
+    System.out.println(bst.select(1));
   }
 }
