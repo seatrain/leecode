@@ -85,17 +85,17 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
   }
 
-  private Value min() {
-    return min(root);
+  public Value min() {
+    return min(root).value;
   }
 
-  private Value min(Node node) {
+  private Node min(Node node) {
     if (node == null) {
       return null;
     }
 
     if (node.left == null) {
-      return node.value;
+      return node;
     } else {
       return min(node.left);
     }
@@ -119,18 +119,70 @@ public class BST<Key extends Comparable<Key>, Value> {
     } else {
       return select(node.right, k - t - 1);
     }
+  }
 
+  public void deleteMin() {
+
+    root = deleteMin(root);
+  }
+
+  public Node deleteMin(Node node) {
+    if (node.left == null) {
+      return node.right;
+    } else {
+      node = deleteMin(node.left);
+    }
+
+    node.N = size(node.left) - 1 + size(node);
+
+    return node;
+  }
+
+  public void delete(Key key) {
+    root = delete(root, key);
+  }
+
+  private Node delete(Node node, Key key) {
+    if (node == null) {
+      return null;
+    }
+
+    int cmp = key.compareTo(node.key);
+    if (cmp > 0) {
+      node.right = delete(node.right, key);
+    } else if (cmp < 0) {
+      node.left = delete(node.left, key);
+    } else {
+
+      if (node.left == null) {
+        return node.right;
+      }
+
+      if (node.right == null) {
+        return node.left;
+      }
+      Node t = node;
+      node = min(node.right);
+      node.right = deleteMin(t.right);
+      node.left = t.left;
+    }
+
+    // 对于影响到的节点的节点数进行重新计数
+    node.N = size(node.right) + size(node.left) + 1;
+
+    return node;
   }
 
   public static void main(String[] args) {
     BST<Integer, Integer> bst = new BST<>();
     bst.put(1, 1);
-    bst.put(2, 2);
     bst.put(3, 3);
-    bst.put(4, 4);
+    bst.put(2, 2);
     bst.put(4, 4);
     System.out.println(bst.max());
     System.out.println(bst.min());
     System.out.println(bst.select(1));
+    bst.delete(3);
+    System.out.println(bst.min());
   }
 }
