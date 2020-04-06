@@ -1,5 +1,8 @@
 package tree;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class BST<Key extends Comparable<Key>, Value> {
 
   private Node root;
@@ -133,7 +136,7 @@ public class BST<Key extends Comparable<Key>, Value> {
       node = deleteMin(node.left);
     }
 
-    node.N = size(node.left) - 1 + size(node);
+    node.N = size(node.left) + 1 + size(node.right);
 
     return node;
   }
@@ -173,16 +176,51 @@ public class BST<Key extends Comparable<Key>, Value> {
     return node;
   }
 
+  public void printAll() {
+    print(root);
+  }
+
+  private void print(Node node) {
+    if (node == null) {
+      return;
+    }
+
+    print(node.left);
+    System.out.println(node.key + ":" + node.value);
+    print(node.right);
+  }
+
+  public Iterable<Key> keys(Key lo, Key hi) {
+    Queue<Key> queue = new LinkedList<Key>();
+    keys(root, queue, lo, hi);
+    return queue;
+  }
+
+  private void keys(Node node, Queue<Key> queue, Key lo, Key hi) {
+    if (node == null) {
+      return;
+    }
+    int cmplo = lo.compareTo(node.key);
+    int cmphi = hi.compareTo(node.key);
+    if (cmplo < 0) {
+      keys(node.left, queue, lo, hi);
+    }
+
+    if (cmplo <= 0 && cmphi >= 0) {
+      queue.add(node.key);
+    }
+
+    if (cmphi > 0) {
+      keys(node.right, queue, lo, hi);
+    }
+  }
+
   public static void main(String[] args) {
     BST<Integer, Integer> bst = new BST<>();
     bst.put(1, 1);
     bst.put(3, 3);
     bst.put(2, 2);
     bst.put(4, 4);
-    System.out.println(bst.max());
-    System.out.println(bst.min());
-    System.out.println(bst.select(1));
-    bst.delete(3);
-    System.out.println(bst.min());
+    bst.printAll();
   }
 }
