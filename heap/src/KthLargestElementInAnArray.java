@@ -1,42 +1,25 @@
+import java.util.PriorityQueue;
+
 /**
  * leecode-215-数组中的第K个最大元素
  */
 public class KthLargestElementInAnArray {
 
-  class MaxKElements {
-
-    private int[] elements;
-    private int n;
-
-    public MaxKElements(int initCapacity) {
-      elements = new int[initCapacity + 1];
-      n = 0;
-    }
-
-    public void insert(int element) {
-      elements[++n] = element;
-      swim(n);
-    }
-
-    private void swim(int k) {
-      while (k > 1 && less(k / 2, k)) {
-        swap(k, k / 2);
-        k = k / 2;
+  public static int findKthLargest(int[] nums, int k) {
+    PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k, (Integer::compareTo));
+    for (int num : nums) {
+      priorityQueue.add(num);
+      if (priorityQueue.size() > k) {
+        priorityQueue.poll();
       }
     }
 
-    private boolean less(int i, int j) {
-      return elements[i] < elements[j];
-    }
-
-    private void swap(int i, int j) {
-      int swap = elements[i];
-      elements[i] = elements[j];
-      elements[j] = swap;
-    }
+    return priorityQueue.peek();
   }
 
-  public int findKthLargest(int[] nums, int k) {
-    return 0;
+  public static void main(String[] args) {
+    int[] nums = new int[]{3, 2, 1, 5, 6, 4};
+    int k = 2;
+    System.out.println(findKthLargest(nums, k));
   }
 }
