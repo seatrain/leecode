@@ -26,36 +26,18 @@ public class MergeTwoSortedLists {
     ListNode prev = prevHead;
 
     while (l1 != null && l2 != null) {
-      int val = 0;
-
       if (l1.val - l2.val > 0) {
-        val = l2.val;
+        prev.next = l2;
         l2 = l2.next;
       } else {
-        val = l1.val;
+        prev.next = l1;
         l1 = l1.next;
       }
 
-      ListNode node = new ListNode(val);
-      prev.next = node;
       prev = prev.next;
     }
 
-    while (l1 != null) {
-      int val = l1.val;
-      ListNode node = new ListNode(val);
-      prev.next = node;
-      prev = prev.next;
-      l1 = l1.next;
-    }
-
-    while (l2 != null) {
-      int val = l2.val;
-      ListNode node = new ListNode(val);
-      prev.next = node;
-      prev = prev.next;
-      l2 = l2.next;
-    }
+    prev.next = l1 != null ? l1 : l2;
 
     return prevHead.next;
   }
