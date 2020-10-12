@@ -47,6 +47,8 @@ public class SortColors {
       } else {
         end -= 1;
         swap(nums, end, curr);
+
+
       }
     }
 
