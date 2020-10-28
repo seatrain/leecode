@@ -56,7 +56,7 @@
 // Related Topics 双指针
 // 👍 44 👎 0
 
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * 水果成篮
@@ -69,49 +69,58 @@ public class TotalFruit {
 
   public int totalFruit(int[] tree) {
     int length = tree.length;
-    if (length <= 1) {
-      return length;
-    }
+    int left = 0;
+    int right = 0;
     int maxLength = 0;
-    int start = 0;
-    int end = 0;
-    HashSet<Integer> set = new HashSet<>();
+    Count count = new Count(3);
 
-    while (end < length) {
-
-      set.add(tree[start]);
-      set.add(tree[end]);
-
-      while (end < length) {
-        if (set.contains(tree[end])) {
-          maxLength = Math.max(maxLength, end - start + 1);
-          end++;
-        } else {
-          if (set.size() < 2) {
-            maxLength = Math.max(maxLength, end - start + 1);
-            set.add(tree[end]);
-            end++;
-          } else {
-            break;
+    while (right < length) {
+      count.put(tree[right], 1);
+      if (count.size() > 2) {
+        while (count.size() > 2) {
+          int item = tree[left];
+          count.put(item, -1);
+          if (count.get(item) == 0) {
+            count.remove(item);
           }
+          left++;
         }
+      } else {
+        maxLength = Math.max(maxLength, right - left + 1);
       }
-
-      start = end - 1;
-      int flagNum = tree[start];
-      while (start >= 0 && tree[start] == flagNum) {
-        start--;
-      }
-
-      if(start >= 0) {
-        set.remove(tree[start]);
-      }
-
-      start += 1;
+      right++;
     }
 
     return maxLength;
   }
+
+  static class Count extends HashMap<Integer, Integer> {
+
+    public Count(int i) {
+      super(3);
+    }
+
+    @Override
+    public Integer get(Object key) {
+      Integer value = super.get(key);
+      return value == null ? 0 : value;
+    }
+
+    @Override
+    public Integer put(Integer key, Integer value) {
+      int result = 0;
+      if (containsKey(key)) {
+        result = get(key) + value;
+        super.put(key, result);
+      } else {
+        result = 1;
+        super.put(key, result);
+      }
+
+      return result;
+    }
+  }
+
 
   public static void main(String[] args) {
     int[] tree = new int[]{3, 3, 3, 1, 2, 1, 1, 2, 3, 3, 4};
